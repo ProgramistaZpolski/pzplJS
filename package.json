@@ -1,0 +1,15 @@
+{
+  "name": "pzpljs",
+  "version": "0.1.0",
+  "description": "A very simple JS libary for my own purposes",
+  "main": "pzpl.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pzpljs"
+  ],
+  "author": "ProgramistaZpolski",
+  "license": "MIT",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+}
