@@ -2,8 +2,8 @@
 function $(h){
     return document.querySelector(h);
 }
-function fetcher(farg1) {
-  fetch(farg1)   
+function qfetch(fg1) {
+  fetch(fg1)   
     .then(function (resp) { return resp.json() }) 
     .then(function (data) {
         console.log(data);
