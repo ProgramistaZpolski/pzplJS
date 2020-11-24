@@ -6,9 +6,8 @@ Some example code:
 ```html
 <body data-pzpljs-sdata='{ "body": "i can supply data!" }'>
     <h1>Hello World</h1>
-    <div data-pzpljs-html="./hello.html" data-pzpljs-sdata='{ "loaded": "this data has been supplied from the div with the data-pzpljs-html function" }'></div>
+    <div data-pzpljs-html="./hello.html"></div>
     <button onclick="pzpljs.fadeOut(50, this);" id="mynicebutton">Click to fade out</button>
-    <button onclick="pzpljs.fadeIn(50, document.querySelector('#mynicebutton'));">Click to fade in</button>
     <div data-pzpljs-dlayer="ferie"></div>
     <div data-pzpljs-dlayer="lato"></div>
     <script src="pzpl.js"></script>
