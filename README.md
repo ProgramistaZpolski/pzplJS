@@ -1,6 +1,5 @@
 # pzplJS
 A JavaScript libary, made for learning.<br>
-It makes working with the Web easier.<br>
 Check out the documentation in the Wiki secition.<br>
 Some example code:
 ```html
