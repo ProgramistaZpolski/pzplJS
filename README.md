@@ -1,29 +1,16 @@
 # pzplJS
-a very simple javascript libary for my own purposes
-## Usage
-### Select a DOM element by:
-- class name
-```js
-$(".myclass");
-```
-- id
-```js
-$("#myid");
-```
-- tag
-```js
-$("header");
-```
-Example:
-```js
-$(".card").style.display = "flex";
-```
-### Fetch JSON data
-```js
-fetcher("link to your api");
-```
-Example:
-```js
-let deeta = fetcher('https://api.jsonbin.io/b/5f95924cbd69750f00c35a19');
-$('#card-title').innerHTML = deeta[1].title;
+A JavaScript libary, made for learning.<br>
+It makes working with the Web easier.<br>
+Check out the documentation in the Wiki secition.<br>
+Some example code:
+```html
+<body data-pzpljs-sdata='{ "body": "i can supply data!" }'>
+    <h1>Hello World</h1>
+    <div data-pzpljs-html="./hello.html" data-pzpljs-sdata='{ "loaded": "this data has been supplied from the div with the data-pzpljs-html function" }'></div>
+    <button onclick="pzpljs.fadeOut(50, this);" id="mynicebutton">Click to fade out</button>
+    <button onclick="pzpljs.fadeIn(50, document.querySelector('#mynicebutton'));">Click to fade in</button>
+    <div data-pzpljs-dlayer="ferie"></div>
+    <div data-pzpljs-dlayer="lato"></div>
+    <script src="pzpl.js"></script>
+</body>
 ```
