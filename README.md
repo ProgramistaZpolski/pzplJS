@@ -1,5 +1,6 @@
 # pzplJS
 A JavaScript libary, made for learning.<br>
+The base size is 1.73 KB, but you can freely delete functions from the file, and make it as small as 61 bytes.
 Check out the documentation in the Wiki secition.<br>
 Some example code:
 ```html
