@@ -11,5 +11,13 @@ Some example code:
     <div data-pzpljs-dlayer="ferie"></div>
     <div data-pzpljs-dlayer="lato"></div>
     <script src="pzpl.js"></script>
+    <script>
+        pzpljs.includeHTML();
+        pzpljs.dataLayer = {
+            "ferie": "<i>luty</i>",
+            "lato": "sierpień"
+        }
+        pzpljs.useDataLayer("html");     
+    </script>
 </body>
 ```
