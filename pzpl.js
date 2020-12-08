@@ -1,4 +1,4 @@
-// pzplJS 1.1 - New Generation JavaScript
+// pzplJS 1.1.1 - New Generation JavaScript
 // Licensed under the MIT license - by ProgramistaZpolski
 "use strict";
 let pzpljs = {};
@@ -7,9 +7,9 @@ function $(selector) {
 };
 function $$(selector) {
     return document.querySelectorAll(selector);
-}
+};
 pzpljs.info = {
-    "version": "1.1",
+    "version": "1.1.1",
     "config": {
         "logging": true,
         "allowDataLayerUsage": true
@@ -71,7 +71,7 @@ pzpljs.useDataLayer = function (dataLayerMode) {
     if (pzpljs.info.allowDataLayerUsage === true) {
         let tags = document.getElementsByTagName("*");
         if (dataLayerMode !== "html" && dataLayerMode !== "text") {
-            console.log("dataLayerMode not specified! Resorting to text mode...")
+            console.log("dataLayerMode not specified! Resorting to text mode...");
         };
         for (let i = 0; i < tags.length; i++) {
             let dlayer = tags[i].getAttribute("data-pzpljs-dlayer");
@@ -81,7 +81,7 @@ pzpljs.useDataLayer = function (dataLayerMode) {
                 this.dataLayer = { ...this.dataLayer, ...converted_data };
             };
             if (dlayer) {
-                if (dataLayerMode == "html") {
+                if (dataLayerMode === "html") {
                     tags[i].innerHTML = this.dataLayer[dlayer];
                 } else {
                     tags[i].textContent = this.dataLayer[dlayer];
@@ -90,13 +90,17 @@ pzpljs.useDataLayer = function (dataLayerMode) {
         };
     };
 };
+pzpljs.updateDataLayer = function (newData, dataIndex, mode) {
+    if (this.info.config.allowDataLayerUsage === true) {
+        this.dataLayer[dataIndex] = newData;
+        pzpljs.useDataLayer(mode);
+    };
+};
 
 
 pzpljs.dynamicWebsiteElementLoad = function (type, url, target) {
     if (!target && type !== "html") {
         target = "head";
-    } else if (!target && type === "html") {
-        target = "body";
     };
     if (type == "css") {
         document.querySelector(target).innerHTML += `<link rel="stylesheet" href="${url}">`;
@@ -126,15 +130,13 @@ pzpljs.attr = function (obj, prop, action, newValue) {
     if (!obj || !prop || !action) {
         console.log(`pzplJS Error: Not all arguments passed! Traceback: pzpljs.attr(${obj}, ${prop}, ${action})`);
     } else {
-        let returnVal;
         if (action === "get" || action === "GET") {
-            returnVal = obj.getAttribute(prop);
+            return obj.getAttribute(prop);
         } else if (action === "set" || action === "SET") {
-            returnVal = obj.setAttribute(prop, newValue);
+            return obj.setAttribute(prop, newValue);
         } else if (action === "delete" || action === "DELETE") {
-            returnVal = obj.removeAttribute(prop);
+            return obj.removeAttribute(prop);
         };
-        return returnVal;
     };
 };
 
@@ -160,13 +162,12 @@ pzpljs.empty = function (obj) {
 
 pzpljs.array = {};
 pzpljs.array.noFalse = function (arr) {
-    let index = 0;
-    let result = [];
+    return arr.filter(Boolean);
+};
 
-    for (const value of arr) {
-        if (value) {
-            result[index++] = value;
-        };
-    };
-    return result;
+pzpljs.after = function (elem, target) {
+    target.insertAdjacentElement("afterend", elem);
+};
+pzpljs.before = function (elem, target) {
+    target.insertAdjacentElement("beforebegin", elem);
 };
