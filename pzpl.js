@@ -1,4 +1,4 @@
-// pzplJS 1.1.1 - New Generation JavaScript
+// pzplJS 1.1.2 - New Generation JavaScript
 // Licensed under the MIT license - by ProgramistaZpolski
 "use strict";
 let pzpljs = {};
@@ -9,7 +9,7 @@ function $$(selector) {
     return document.querySelectorAll(selector);
 };
 pzpljs.info = {
-    "version": "1.1.1",
+    "version": "1.1.2",
     "config": {
         "logging": true,
         "allowDataLayerUsage": true
@@ -105,7 +105,9 @@ pzpljs.dynamicWebsiteElementLoad = function (type, url, target) {
     if (type == "css") {
         document.querySelector(target).innerHTML += `<link rel="stylesheet" href="${url}">`;
     } else if (type == "js") {
-        document.querySelector(target).innerHTML += `<script src="${url}">`;
+        let script = document.createElement('script');
+        script.src = url;
+        document.querySelector(target).appendChild(script);
     } else if (type == "html") {
         fetch(url).then(
             async function (resp) {
@@ -171,3 +173,11 @@ pzpljs.after = function (elem, target) {
 pzpljs.before = function (elem, target) {
     target.insertAdjacentElement("beforebegin", elem);
 };
+
+pzpljs.noXSS = function (val) {
+    const lt = /</g,
+        gt = />/g,
+        ap = /'/g,
+        ic = /"/g;
+    return val.toString().replace(lt, "&lt;").replace(gt, "&gt;").replace(ap, "&#39;").replace(ic, "&#34;");
+}
