@@ -1,22 +1,87 @@
-// pzplJS 1.1.2 - New Generation JavaScript
-// Licensed under the MIT license - by ProgramistaZpolski
+// pzplJS 1.2 - New Generation Javascript - Licensed under MIT
 "use strict";
-let pzpljs = {};
-function $(selector) {
-    return document.querySelector(selector);
+
+let pzplJS = function (selector) {
+    let el, elHTML;
+
+    let obj = {
+        getEl(selector) {
+            if (el) {
+                return el;
+            };
+            return document.querySelector(selector);
+        },
+        addClass(className) {
+            el.classList.add(className);
+            return this;
+        },
+        removeClass(className) {
+            el.classList.remove(className);
+            return this;
+        },
+        fadeOut(fast) {
+            let fade = setInterval(function () {
+                if (!el.style.opacity) {
+                    el.style.opacity = 1;
+                }
+                if (el.style.opacity > 0) {
+                    el.style.opacity -= 0.1;
+                } else {
+                    clearInterval(fade);
+                }
+            }, fast);
+        },
+        fadeIn(fast) {
+            let fade = setInterval(function () {
+                if (!el.style.opacity) {
+                    el.style.opacity = 0;
+                }
+                if (el.style.opacity < 1) {
+                    el.style.opacity = parseFloat(el.style.opacity) + 0.1;
+                } else {
+                    clearInterval(fade);
+                }
+            }, fast);
+        },
+        attr(prop, newValue) {
+            if (newValue) {
+                if (newValue == "") {
+                    return elHTML.removeAttribute(prop);
+                } else {
+                    return elHTML.setAttribute(prop, newValue);
+                };
+            } else {
+                return el.getAttribute(prop);
+            };
+        },
+        css(propName, newValue) {
+            if (newValue) {
+                elHTML.style[propName] = newValue;
+            } else {
+                return elHTML.style[propName];
+            };
+        },
+        empty() {
+            if (elHTML.hasChildNodes()) {
+                elHTML.innerHTML = "";
+            } else {
+                elHTML.remove();
+            };
+        },
+        after(elem) {
+            elHTML.insertAdjacentElement("afterend", elem);
+        },
+        before(elem) {
+            elHTML.insertAdjacentElement("beforebegin", elem);
+        }
+    };
+
+    el = obj.getEl(selector);
+    elHTML = el;
+    return obj;
 };
-function $$(selector) {
-    return document.querySelectorAll(selector);
-};
-pzpljs.info = {
-    "version": "1.1.2",
-    "config": {
-        "logging": true,
-        "allowDataLayerUsage": true
-    },
-    "thanks": "for using pzplJS"
-};
-pzpljs.includeHTML = function () {
+
+pzplJS.includeHTML = function () {
     let tags = document.getElementsByTagName("*");
     for (let i = 0; i < tags.length; i++) {
         let element = tags[i];
@@ -25,80 +90,49 @@ pzpljs.includeHTML = function () {
             fetch(htmlFile).then(
                 async function (resp) {
                     if (!resp.ok) {
-                        if (this.info.config.logging === true) {
-                            element.innerHTML = "pzplJS Error: Failed to fetch data";
-                        };
-                        console.log("pzplJS Error: Failed to fetch data. Traceback: pzpljs.includeHTML();");
+                        element.innerHTML = "pzplJS Error: Failed to fetch data";
                     } else {
                         element.innerHTML = await resp.text();
-                    }
+                    };
                 }
             );
             element.removeAttribute("data-pzpljs-html");
         };
-    }
+    };
 };
 
-pzpljs.fadeOut = function (fast, target) {
-    let fade = setInterval(function () {
-        if (!target.style.opacity) {
-            target.style.opacity = 1;
-        }
-        if (target.style.opacity > 0) {
-            target.style.opacity -= 0.1;
-        } else {
-            clearInterval(fade);
-        }
-    }, fast);
+pzplJS.isFunction = function (obj) {
+    return typeof obj === "function" && typeof obj.nodeType !== "number";
 };
 
-pzpljs.fadeIn = function (fast, target) {
-    let fade = setInterval(function () {
-        if (!target.style.opacity) {
-            target.style.opacity = 0;
-        }
-        if (target.style.opacity < 1) {
-            target.style.opacity = parseFloat(target.style.opacity) + 0.1;
-        } else {
-            clearInterval(fade);
-        }
-    }, fast);
-};
-
-pzpljs.dataLayer = {};
-
-pzpljs.useDataLayer = function (dataLayerMode) {
-    if (pzpljs.info.allowDataLayerUsage === true) {
-        let tags = document.getElementsByTagName("*");
-        if (dataLayerMode !== "html" && dataLayerMode !== "text") {
-            console.log("dataLayerMode not specified! Resorting to text mode...");
+pzplJS.useDataLayer = function (dataLayerMode) {
+    let tags = document.getElementsByTagName("*");
+    if (dataLayerMode !== "html" && dataLayerMode !== "text") {
+        console.log("dataLayerMode not specified! Resorting to text mode...");
+    };
+    for (let i = 0; i < tags.length; i++) {
+        let dlayer = tags[i].getAttribute("data-pzpljs-dlayer");
+        let supplied_data = tags[i].getAttribute("data-pzpljs-sdata");
+        if (supplied_data) {
+            let converted_data = JSON.parse(supplied_data);
+            this.dataLayer = { ...this.dataLayer, ...converted_data };
         };
-        for (let i = 0; i < tags.length; i++) {
-            let dlayer = tags[i].getAttribute("data-pzpljs-dlayer");
-            let supplied_data = tags[i].getAttribute("data-pzpljs-sdata");
-            if (supplied_data) {
-                let converted_data = JSON.parse(supplied_data);
-                this.dataLayer = { ...this.dataLayer, ...converted_data };
-            };
-            if (dlayer) {
-                if (dataLayerMode === "html") {
-                    tags[i].innerHTML = this.dataLayer[dlayer];
-                } else {
-                    tags[i].textContent = this.dataLayer[dlayer];
-                };
+        if (dlayer) {
+            if (dataLayerMode === "html") {
+                tags[i].innerHTML = this.dataLayer[dlayer];
+            } else {
+                tags[i].textContent = this.dataLayer[dlayer];
             };
         };
     };
 };
-pzpljs.updateDataLayer = function (newData, dataIndex, mode) {
-    if (this.info.config.allowDataLayerUsage === true) {
-        this.dataLayer[dataIndex] = newData;
-        pzpljs.useDataLayer(mode);
-    };
+pzplJS.updateDataLayer = function (newData, dataIndex, mode) {
+    this.dataLayer[dataIndex] = newData;
+    pzpljs.useDataLayer(mode);
 };
 
 
-pzpljs.dynamicWebsiteElementLoad = function (type, url, target) {
+pzplJS.dynamicWebsiteElementLoad = function (type, url, target) {
     if (!target && type !== "html") {
         target = "head";
     };
@@ -124,54 +158,8 @@ pzpljs.dynamicWebsiteElementLoad = function (type, url, target) {
     };
 };
 
-pzpljs.isFunction = function (obj) {
-    return typeof obj === "function" && typeof obj.nodeType !== "number";
-};
-
-pzpljs.attr = function (obj, prop, action, newValue) {
-    if (!obj || !prop || !action) {
-        console.log(`pzplJS Error: Not all arguments passed! Traceback: pzpljs.attr(${obj}, ${prop}, ${action})`);
-    } else {
-        if (action === "get" || action === "GET") {
-            return obj.getAttribute(prop);
-        } else if (action === "set" || action === "SET") {
-            return obj.setAttribute(prop, newValue);
-        } else if (action === "delete" || action === "DELETE") {
-            return obj.removeAttribute(prop);
-        };
-    };
-};
-
-pzpljs.css = function (obj, propName, newValue) {
-    if (!obj || !propName) {
-        console.log(`pzplJS Error: Required parameters not specified! Traceback: pzpljs.css(${obj}, ${propName})`);
-    } else {
-        if (newValue) {
-            obj.style[propName] = newValue;
-        } else {
-            return obj.style[propName];
-        };
-    };
-};
-
-pzpljs.empty = function (obj) {
-    if (obj.hasChildNodes()) {
-        obj.innerHTML = "";
-    } else {
-        obj.remove();
-    };
-};
-
-pzpljs.array = {};
-pzpljs.array.noFalse = function (arr) {
+pzpljs.noFalse = function (arr) {
     return arr.filter(Boolean);
-};
-
-pzpljs.after = function (elem, target) {
-    target.insertAdjacentElement("afterend", elem);
-};
-pzpljs.before = function (elem, target) {
-    target.insertAdjacentElement("beforebegin", elem);
 };
 
 pzpljs.noXSS = function (val) {
@@ -180,4 +168,8 @@ pzpljs.noXSS = function (val) {
         ap = /'/g,
         ic = /"/g;
     return val.toString().replace(lt, "&lt;").replace(gt, "&gt;").replace(ap, "&#39;").replace(ic, "&#34;");
-}
+};
+
+
+pzplJS.fn = pzplJS.prototype;
+pzplJS.fn.version = "1.2";
